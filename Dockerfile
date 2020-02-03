@@ -1,14 +1,15 @@
 FROM ubuntu:18.04
-LABEL maintainer="Yorick van Zweeden"
+LABEL maintainer="Christopher Bull"
 
 # Variables taken from variables.env
-ARG AVD_NAME
-ARG ANDROID_HOME
-ARG VERSION_COMPILE_VERSION
-ARG VERSION_SDK_TOOLS
+ARG AVD_NAME=myavd
+ARG SNAPSHOT_NAME=myemulator
+ARG ANDROID_HOME=/sdk
+ARG VERSION_COMPILE_VERSION=29
+ARG VERSION_SDK_TOOLS=4333796
 
 # Expect requires tzdata, which requires a timezone specified
-RUN ln -fs /usr/share/zoneinfo/Europe/Amsterdam /etc/localtime
+RUN ln -fs /usr/share/zoneinfo/Europe/London /etc/localtime
 
 RUN apt-get -qq update && \
       apt-get install -qqy --no-install-recommends \
@@ -43,7 +44,7 @@ RUN rm -f /etc/ssl/certs/java/cacerts; \
     /var/lib/dpkg/info/ca-certificates-java.postinst configure
 
 # Downloading SDK-tools (AVDManager, SDKManager, etc)
-RUN curl -s https://dl.google.com/android/repository/sdk-tools-linux-${VERSION_SDK_TOOLS}.zip > /sdk.zip && \
+RUN curl -s https://dl.google.com/android/repository/sdk-tools-linux-"${VERSION_SDK_TOOLS}".zip > /sdk.zip && \
     unzip /sdk.zip -d /sdk && \
     rm -v /sdk.zip
 
