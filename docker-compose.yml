@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  your_service:
+  android_emulator_service:
     container_name: emulator
     image: "emulator"
     build:
@@ -9,12 +9,14 @@ services:
       context: .
       args:
         - AVD_NAME=${AVD_NAME}
-        - ANDROID_HOME=${ANDROID_HOME}
-        - VERSION_COMPILE_VERSION=${VERSION_COMPILE_VERSION}
-        - VERSION_SDK_TOOLS=${VERSION_SDK_TOOLS}
+        - SNAPSHOT_NAME=${SNAPSHOT_NAME}
 
     # Run scripts in container in privileged mode
     entrypoint: /commands-to-run-in-privileged-mode.sh ${AVD_NAME} ${SNAPSHOT_NAME}
+    # Privileged mode required to run Android emulator snapshots.
+    # https://gitlab.com/gitlab-org/gitlab-runner/issues/2242#note_121185541
     privileged: true
+    # .env file required to use values within docker-compose.
+    # 'environment/args:' keys alone are not sufficient.
     env_file:
       - .env

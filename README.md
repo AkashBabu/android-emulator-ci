@@ -1,22 +1,26 @@
-# Android CI
-### Continous Integration (CI) for Android apps with an emulator
+# Android Emulator CI
+
+## Continuous Integration (CI) for Android applications with an emulator
+
 By using snapshots, the emulator in this image is able to boot in under 15 seconds. This Docker image contains the Android SDK, emulator packages and an AVD with a snapshot.
 
-# Image
+## Image
+
 ```yml
-image: yorickvanzweeden/android-ci:latest
+image: caffeinatedandroid/android-emulator-ci:latest
 ```
 
-Specifications
-* Build-tools: 28.0.2
-* Platform: 24
-* System-image: android-24;google_apis;x86_64
+Specifications:
 
-# Sample GitLab usage
-*.gitlab-ci.yml*
+* Build-tools: 29.0.2
+* Platform: 29
+* System-image: android-29;google_apis;x86_64
+
+## Sample GitLab usage
 
 ```yml
-image: yorickvanzweeden/android-ci:latest
+# .gitlab-ci.yml
+image: caffeinatedandroid/android-emulator-ci:latest
 
 before_script:
     - export GRADLE_USER_HOME=`pwd`/.gradle
@@ -56,8 +60,13 @@ instrumentedTests:
     - ./gradlew cAT
 ```
 
+## How it works
 
-# How it works
 In order to have an emulator running in a Docker container, the Docker container must run with a `privileged` flag. This flag is required for KVM (Linux kernel virtualization). Docker build does not contain a `privileged` flag and therefore docker-compose is used with a bash script. The bash script is allowed to run in privileged mode and start the emulator. In order to save a snapshot, an expect script is fired that sets up a telnet connection. In Gitlab/other CI tools, the emulator may start from the snapshot instead of a cold boot. This reduces the startup time of the emulator to about 15 seconds.
 
 If you want to create your own image, you should adjust the `.env` file to your needs and run the `build-image.sh` script. The name of the AVD and snapshot used are stored in the variables `AVD_NAME` and `SNAPSHOT_NAME`.
+
+## Acknowledgements
+
+Builds upon the work of [Yorick van Zweeden
+](https://github.com/yorickvanzweeden/android-ci) and [Jan Grewe](https://github.com/jangrewe/gitlab-ci-android).
